@@ -23,7 +23,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 @Singleton
 public class GuiceServletContainer extends ServletContainer {
-	
+
 	@Inject
 	public GuiceServletContainer(JerseyGuiceResourceConfig resourceConfig) {
 		super(resourceConfig);

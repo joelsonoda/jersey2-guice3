@@ -17,20 +17,17 @@
 
 package net.sonodas.j2g3.config;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.Provider;
-import java.util.Set;
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.binding.ServiceBindingBuilder;
 import org.glassfish.jersey.internal.inject.Injections;
-import org.glassfish.jersey.server.ExtendedUriInfo;
 import org.glassfish.jersey.server.spi.ComponentProvider;
-import org.jvnet.hk2.guice.bridge.api.HK2IntoGuiceBridge;
+
+import java.util.Set;
 
 public class GuiceComponentProvider implements ComponentProvider {
 	private Injector injector;
@@ -40,25 +37,10 @@ public class GuiceComponentProvider implements ComponentProvider {
 	public void initialize(final ServiceLocator locator) {
 		this.locator = locator;
 		if(locator != null) {
-			Injector origInjector = locator.getService(Injector.class);
-			
-			if(origInjector != null) {
-				this.injector = origInjector.createChildInjector(
-					new HK2IntoGuiceBridge(locator),
-					new AbstractModule() {
-						@Override
-						protected void configure() {
-							bind(ExtendedUriInfo.class).toProvider(new Provider<ExtendedUriInfo>() {
-
-								@Override
-								public ExtendedUriInfo get() {
-									return locator.getService(ExtendedUriInfo.class);
-								}
-								
-							});
-						}
-					}
-				);
+			injector = locator.getService(Injector.class);
+			MutableServiceLocatorProvider serviceLocatorProvider = injector.getInstance(MutableServiceLocatorProvider.class);
+			if(serviceLocatorProvider != null) {
+				serviceLocatorProvider.setServiceLocator(locator);
 			}
 		}
 	}

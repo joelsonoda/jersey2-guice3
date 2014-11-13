@@ -51,7 +51,7 @@ public class GuiceComponentProviderTest extends JerseyTest {
 	private Injector getInjector() {
 		return Guice.createInjector(new JerseyGuiceServletModule(){
 			@Override
-			protected void configureServlets() {
+			protected void configureJerseyServlet() {
 				bind(GuiceInjectable.class);
 				bind(GuiceInjectable.class)
 					.annotatedWith(MyBindingAnnotation.class)
